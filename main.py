@@ -29,12 +29,18 @@ pygame.display.toggle_fullscreen()
 i = 1
 while i <= 150:
   filename = "frame" + "%03d" % (i,) + ".png"
-  image_queue.append(pygame.image.load(filename))
+  image_queue.append(pygame.image.load("frames_projector/" + filename))
   i += 1
 
 # VERY early consumer code
+current_time_milliseconds = 0
+frame_duration_milliseconds = 40
 while image_queue:
-  time.sleep(20.0 / 1000.0)
-  windowSurfaceObj.blit(image_queue.pop(0),(0,0))
-  pygame.display.update()
+  # Change this to instead of waiting n ms, track how much time has passed
+  if (current_time_milliseconds == 0) or (int(round(time.time() * 1000)) - current_time_milliseconds >= frame_duration_milliseconds):
+    current_time_milliseconds = int(round(time.time() * 1000))
+    windowSurfaceObj.blit(image_queue.pop(0),(0,0))
+    pygame.display.update()
+    # maybe refactor to record time again here and then do time.sleep(remainder to reach 40 ms)
+    # time.sleep should block until it's time again, freeing CPU for producer to run... assuming time.sleep works as i think
   
