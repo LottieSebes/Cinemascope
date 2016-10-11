@@ -19,16 +19,20 @@ image_queue = list()
 # consumer process takes frames off the queue at a variable rate, but no faster than
 # half of the frames in the queue per second - may need to tweak max queue size, max speed
 
+# e.g. http://www.bogotobogo.com/python/Multithread/python_multithreading_Synchronization_Producer_Consumer_using_Queue.php
+# e.g. https://docs.python.org/3/library/queue.html
+# e.g. https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem
+
 pygame.display.toggle_fullscreen()
 
-# early producer code
+# VERY early producer code
 i = 1
 while i <= 150:
   filename = "frame" + "%03d" % (i,) + ".png"
   image_queue.append(pygame.image.load(filename))
   i += 1
 
-# early consumer code
+# VERY early consumer code
 while image_queue:
   time.sleep(20.0 / 1000.0)
   windowSurfaceObj.blit(image_queue.pop(0),(0,0))
