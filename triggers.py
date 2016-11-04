@@ -3,9 +3,34 @@
 import time
 import datetime
 import random
+import math
 import Adafruit_MCP3008
 import Adafruit_GPIO.SPI as SPI
 from sources import NormalisedMCPChannel
+
+class RandomSineTrigger:
+    def __init__(self, period, state='L'):
+        self.period = period
+        self.state = state
+        self.epoch = time.time()
+        self.tau = math.radians(360)
+
+    def transition(self):
+        if self.state == 'L':
+            self.state = 'H'
+            transition = 'R'
+        else:
+            self.state = 'L'
+            transition = 'F'
+        return transition
+
+    def sample(self):
+        delta = time.time() - self.epoch
+        x = random.uniform(-1.0, 1.0)
+        y = math.sin((delta * self.tau) / self.period)
+        if x > y:
+            return self.transition()
+        return self.state
 
 class RandomTrigger:
     def __init__(self, min_delta, max_delta, state='L'):
