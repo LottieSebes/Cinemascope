@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import time
-from triggers import RandomTrigger
+from triggers import RandomSineTrigger
 
 class Smoother:
     def __init__(self, trigger, size):
@@ -9,6 +9,10 @@ class Smoother:
         self.last = None
         self.buffer = [0 for i in range(size)]
         self.next = 0
+        self.cached = 0
+
+    def sample(self):
+        return self.cached
 
     def update(self):
         sample = self.trigger.sample()
@@ -20,12 +24,13 @@ class Smoother:
 
         self.last = sample
         self.next = (self.next + 1) % len(self.buffer)
+        self.cached = sum(self.buffer) / float(len(self.buffer))
         
-        return sum(self.buffer) / float(len(self.buffer))
+        return self.cached
 
 if __name__ == '__main__':
-    trigger = RandomTrigger(0.25, 0.5)
-    smoother = Smoother(trigger, 10)
+    trigger = RandomSineTrigger(2)
+    smoother = Smoother(trigger, 20)
     while True:
         print smoother.update()
         time.sleep(0.1)
