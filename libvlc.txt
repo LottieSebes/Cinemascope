@@ -1,3 +1,20 @@
-Compiling libVLC with Hardware Acceleration:
+Compiling VLC with Hardware Acceleration:
 
 https://www.raspberrypi.org/forums/viewtopic.php?f=66&t=59814&sid=65d833a90f1ee134cb57523599e1c8aa
+
+
+Forcing LibVLC Hardware Acceleration
+
+/**************************************************************************
+ * set_xwindow
+ **************************************************************************/
+void libvlc_media_player_set_xwindow( libvlc_media_player_t *p_mi,
+                                      uint32_t drawable )
+{
+    assert (p_mi != NULL);
+
+    var_SetString (p_mi, "avcodec-hw", "any");
+    var_SetString (p_mi, "vout", drawable ? "omxil_vout" : "any");
+    var_SetString (p_mi, "window", drawable ? "embed-xid,any" : "any");
+    var_SetInteger (p_mi, "drawable-xid", drawable);
+}
