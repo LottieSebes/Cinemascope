@@ -1,3 +1,7 @@
 frames_projector/
 *.tgz
 *.pyc
+*.mov
+*.mp4
+*.mpg
+venv/
