@@ -1,10 +1,13 @@
-#!/usr/bin/env python
+#!/home/pi/cinemascope/venv/bin/python
 
 import ctypes
 import vlc
 import sys
+import sources
 import smoother
 import triggers
+import Adafruit_MCP3008
+import Adafruit_GPIO.SPI as SPI
 from Tkinter import Tk, Frame, BOTH
 
 class TkScope(Frame):
@@ -76,13 +79,15 @@ if __name__ == '__main__':
     root.geometry('{}x{}'.format(1280, 800))
     root.config(cursor='none')
 
-    trigger = triggers.RandomSineTrigger(5)
+    mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(0,0))
+    source = sources.NormalisedMCPChannel(mcp, 0)
+    trigger = triggers.SchmittTrigger(0.45, 0.55, source)
     smoother = smoother.Smoother(trigger, 10)
 
     player = TkScope(root)
     player.open(sys.argv[1])
 
-    start_smoother(root, 50, smoother)
-    start_rate(root, 200, player, smoother)
+    start_smoother(root, 10, smoother)
+    start_rate(root, 100, player, smoother)
 
     root.mainloop()
